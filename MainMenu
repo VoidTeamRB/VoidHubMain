@@ -1,0 +1,278 @@
+-- VOID HUB // THE ULTIMATE VERSION (WITH FLY)
+local L_Players = game:GetService("Players")
+local L_RunService = game:GetService("RunService")
+local L_UIS = game:GetService("UserInputService")
+local L_LocalPlayer = L_Players.LocalPlayer
+local L_CoreGui = game:GetService("CoreGui")
+local L_Mouse = L_LocalPlayer:GetMouse()
+
+if L_CoreGui:FindFirstChild("VoidNeon") then L_CoreGui.VoidNeon:Destroy() end
+
+local ScreenGui = Instance.new("ScreenGui", L_CoreGui)
+ScreenGui.Name = "VoidNeon"
+ScreenGui.DisplayOrder = 999
+
+local Config = { ToggleKey = Enum.KeyCode.K, Binding = false, FlySpeed = 50 }
+local MainFont = Enum.Font.GothamBold
+local TG_LINK = "https://t.me/void_archive"
+
+-- UI Structure
+local Main = Instance.new("Frame", ScreenGui)
+Main.Size = UDim2.new(0, 220, 0, 480)
+Main.Position = UDim2.new(0.1, 0, 0.2, 0)
+Main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+Main.Active = true
+Main.Draggable = true
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 10)
+
+local MainStroke = Instance.new("UIStroke", Main)
+MainStroke.Color = Color3.fromRGB(130, 130, 130)
+MainStroke.Thickness = 2
+
+-- Header
+local Header = Instance.new("TextLabel", Main)
+Header.Size = UDim2.new(1, 0, 0, 45)
+Header.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Header.Text = "VOID HUB // PRIVATE"
+Header.TextColor3 = Color3.fromRGB(255, 255, 255)
+Header.TextSize = 16
+Header.Font = MainFont
+Instance.new("UICorner", Header).CornerRadius = UDim.new(0, 10)
+
+-- Tab Switcher
+local TabFrame = Instance.new("Frame", Main)
+TabFrame.Size = UDim2.new(1, 0, 0, 35)
+TabFrame.Position = UDim2.new(0, 0, 0, 45)
+TabFrame.BackgroundTransparency = 1
+
+local MainTabBtn = Instance.new("TextButton", TabFrame)
+MainTabBtn.Size = UDim2.new(0.5, 0, 1, 0)
+MainTabBtn.Text = "MAIN"
+MainTabBtn.Font = MainFont
+MainTabBtn.TextSize = 14
+MainTabBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+MainTabBtn.TextColor3 = Color3.new(1, 1, 1)
+
+local SettingsTabBtn = Instance.new("TextButton", TabFrame)
+SettingsTabBtn.Size = UDim2.new(0.5, 0, 1, 0)
+SettingsTabBtn.Position = UDim2.new(0.5, 0, 0, 0)
+SettingsTabBtn.Text = "SETTINGS"
+SettingsTabBtn.Font = MainFont
+SettingsTabBtn.TextSize = 14
+SettingsTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+SettingsTabBtn.TextColor3 = Color3.new(0.6, 0.6, 0.6)
+
+-- Containers
+local MainContainer = Instance.new("ScrollingFrame", Main)
+MainContainer.Size = UDim2.new(1, -20, 1, -120)
+MainContainer.Position = UDim2.new(0, 10, 0, 85)
+MainContainer.BackgroundTransparency = 1
+MainContainer.CanvasSize = UDim2.new(0, 0, 0, 600)
+MainContainer.ScrollBarThickness = 0
+local MainLayout = Instance.new("UIListLayout", MainContainer)
+MainLayout.Padding = UDim.new(0, 8)
+
+local SettingsContainer = Instance.new("Frame", Main)
+SettingsContainer.Size = UDim2.new(1, -20, 1, -120)
+SettingsContainer.Position = UDim2.new(0, 10, 0, 85)
+SettingsContainer.BackgroundTransparency = 1
+SettingsContainer.Visible = false
+local SettLayout = Instance.new("UIListLayout", SettingsContainer)
+SettLayout.Padding = UDim.new(0, 15)
+
+-- Settings Content
+local BindBtn = Instance.new("TextButton", SettingsContainer)
+BindBtn.Size = UDim2.new(1, 0, 0, 55)
+BindBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+BindBtn.Text = "MENU KEY: " .. Config.ToggleKey.Name
+BindBtn.TextColor3 = Color3.new(1, 1, 1)
+BindBtn.Font = MainFont
+BindBtn.TextSize = 18
+Instance.new("UICorner", BindBtn).CornerRadius = UDim.new(0, 8)
+
+local TGButton = Instance.new("TextButton", SettingsContainer)
+TGButton.Size = UDim2.new(1, 0, 0, 45)
+TGButton.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+TGButton.Text = "COPY TG LINK"
+TGButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+TGButton.Font = MainFont
+TGButton.TextSize = 14
+Instance.new("UICorner", TGButton).CornerRadius = UDim.new(0, 8)
+
+local DestructBtn = Instance.new("TextButton", SettingsContainer)
+DestructBtn.Size = UDim2.new(1, 0, 0, 40)
+DestructBtn.BackgroundColor3 = Color3.fromRGB(80, 20, 20)
+DestructBtn.Text = "SELF-DESTRUCT (CLOSE)"
+DestructBtn.TextColor3 = Color3.new(1, 1, 1)
+DestructBtn.Font = MainFont
+DestructBtn.TextSize = 12
+Instance.new("UICorner", DestructBtn).CornerRadius = UDim.new(0, 8)
+
+-- Tab Logic
+MainTabBtn.MouseButton1Click:Connect(function()
+    MainContainer.Visible = true
+    SettingsContainer.Visible = false
+    MainTabBtn.TextColor3 = Color3.new(1, 1, 1)
+    SettingsTabBtn.TextColor3 = Color3.new(0.6, 0.6, 0.6)
+end)
+
+SettingsTabBtn.MouseButton1Click:Connect(function()
+    MainContainer.Visible = false
+    SettingsContainer.Visible = true
+    SettingsTabBtn.TextColor3 = Color3.new(1, 1, 1)
+    MainTabBtn.TextColor3 = Color3.new(0.6, 0.6, 0.6)
+end)
+
+-- Main Functions Logic
+local States = { Speed = false, Jump = false, ESP = false, Noclip = false, Spin = false, TP = false, Clicker = false, AntiAFK = false, Fly = false }
+
+-- FLY LOGIC
+local flyPart
+local bv, bg
+local function ToggleFly(state)
+    local char = L_LocalPlayer.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    if state then
+        flyPart = Instance.new("Part", workspace)
+        flyPart.Size = Vector3.new(1, 0.1, 1)
+        flyPart.Transparency = 1
+        flyPart.CanCollide = false
+        
+        bv = Instance.new("BodyVelocity", root)
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.new(0, 0, 0)
+        
+        bg = Instance.new("BodyGyro", root)
+        bg.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+        bg.P = 15000
+        bg.CFrame = root.CFrame
+    else
+        if bv then bv:Destroy() end
+        if bg then bg:Destroy() end
+        if flyPart then flyPart:Destroy() end
+        if char:FindFirstChildOfClass("Humanoid") then
+            char:FindFirstChildOfClass("Humanoid").PlatformStand = false
+        end
+    end
+end
+
+local function AddButton(text, key, icon)
+    local Btn = Instance.new("TextButton", MainContainer)
+    Btn.Size = UDim2.new(1, 0, 0, 38)
+    Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Btn.Text = icon .. " " .. text
+    Btn.TextColor3 = Color3.fromRGB(220, 220, 220)
+    Btn.Font = MainFont
+    Btn.TextSize = 11
+    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
+    local S = Instance.new("UIStroke", Btn)
+    S.Color = Color3.fromRGB(150, 150, 150)
+    S.Transparency = 0.8
+
+    Btn.MouseButton1Click:Connect(function()
+        States[key] = not States[key]
+        Btn.BackgroundColor3 = States[key] and Color3.fromRGB(80, 80, 80) or Color3.fromRGB(40, 40, 40)
+        S.Color = States[key] and Color3.new(1,1,1) or Color3.fromRGB(150, 150, 150)
+        if key == "Fly" then ToggleFly(States[key]) end
+    end)
+end
+
+AddButton("Speed Boost (Hold CTRL)", "Speed", "⚡")
+AddButton("Infinite Jump", "Jump", "🚀")
+AddButton("Fly Mode (W/A/S/D)", "Fly", "✈️")
+AddButton("Noclip (Always)", "Noclip", "👻")
+AddButton("Advanced ESP", "ESP", "👁️")
+AddButton("Fast SpinBot", "Spin", "🌪️")
+AddButton("Click TP (Alt + ПКМ)", "TP", "📍")
+AddButton("Auto-Clicker", "Clicker", "🖱️")
+AddButton("Anti-AFK", "AntiAFK", "💤")
+
+-- Heartbeat Loops
+L_RunService.Stepped:Connect(function()
+    if States.Noclip and L_LocalPlayer.Character then
+        for _, v in pairs(L_LocalPlayer.Character:GetDescendants()) do
+            if v:IsA("BasePart") then v.CanCollide = false end
+        end
+    end
+end)
+
+L_RunService.Heartbeat:Connect(function()
+    local char = L_LocalPlayer.Character
+    local r = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    
+    if r then
+        if States.Fly and bv and bg then
+            hum.PlatformStand = true
+            local dir = (workspace.CurrentCamera.CFrame.LookVector * (L_UIS:IsKeyDown(Enum.KeyCode.W) and 1 or L_UIS:IsKeyDown(Enum.KeyCode.S) and -1 or 0)) +
+                        (workspace.CurrentCamera.CFrame.RightVector * (L_UIS:IsKeyDown(Enum.KeyCode.D) and 1 or L_UIS:IsKeyDown(Enum.KeyCode.A) and -1 or 0)) +
+                        (Vector3.new(0, 1, 0) * (L_UIS:IsKeyDown(Enum.KeyCode.Space) and 1 or L_UIS:IsKeyDown(Enum.KeyCode.LeftShift) and -1 or 0))
+            bv.Velocity = dir * Config.FlySpeed
+            bg.CFrame = workspace.CurrentCamera.CFrame
+        end
+        
+        if States.Speed and L_UIS:IsKeyDown(Enum.KeyCode.LeftControl) then 
+            r.CFrame = r.CFrame + (hum.MoveDirection * 1.6) 
+        end
+        
+        if States.Spin then r.RotVelocity = Vector3.new(0, 150, 0) end
+    end
+end)
+
+-- Event Connections
+L_UIS.JumpRequest:Connect(function()
+    if States.Jump and L_LocalPlayer.Character then
+        L_LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
+
+L_LocalPlayer.Idled:Connect(function()
+    if States.AntiAFK then
+        game:GetService("VirtualUser"):Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        task.wait(1)
+        game:GetService("VirtualUser"):Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    end
+end)
+
+TGButton.MouseButton1Click:Connect(function()
+    if setclipboard then setclipboard(TG_LINK) end
+    TGButton.Text = "COPIED!"
+    task.wait(2)
+    TGButton.Text = "COPY TG LINK"
+end)
+
+DestructBtn.MouseButton1Click:Connect(function()
+    States.Fly = false; ToggleFly(false)
+    ScreenGui:Destroy()
+end)
+
+L_UIS.InputBegan:Connect(function(i, chat)
+    if chat then return end
+    if Config.Binding and i.UserInputType == Enum.UserInputType.Keyboard then
+        Config.ToggleKey = i.KeyCode
+        Config.Binding = false
+        BindBtn.Text = "MENU KEY: " .. i.KeyCode.Name
+    elseif i.KeyCode == Config.ToggleKey then
+        Main.Visible = not Main.Visible
+    end
+    
+    if i.UserInputType == Enum.UserInputType.MouseButton2 and States.TP and L_UIS:IsKeyDown(Enum.KeyCode.LeftAlt) then
+        local r = L_LocalPlayer.Character and L_LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if r then r.CFrame = CFrame.new(L_Mouse.Hit.Position + Vector3.new(0, 3, 0)) end
+    end
+end)
+
+BindBtn.MouseButton1Click:Connect(function() Config.Binding = true; BindBtn.Text = "..." end)
+
+task.spawn(function()
+    while task.wait(0.04) do
+        if States.Clicker and L_LocalPlayer.Character then
+            local t = L_LocalPlayer.Character:FindFirstChildOfClass("Tool")
+            if t then t:Activate() end
+        end
+    end
+end)
+
+print("VOID HUB // FLY ADDED & STABLE")
